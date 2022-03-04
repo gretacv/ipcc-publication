@@ -36,3 +36,19 @@ ggplot(df)+
   ggtitle("Year of publication of the articles referenced\n in Chapter 2 of the 6th IPCC report")+
   theme(strip.background =element_rect(fill="#17005E"),
         strip.text = element_text(colour = '#FCAA6A'))
+
+# Getting the years within the text of chapter 2 to see when in the text each year is mentioned.
+d_text = pdf_text("IPCC_AR6_WGII_FinalDraft_Chapter02.pdf")%>% 
+  strsplit(split = "\n") %>% 
+  unlist() %>% 
+  str_extract("[:digit:][:digit:][:digit:][:digit:]")
+df_text = data.frame(years=d_text[which(d_text!="NA"&d_text%in%df$year)]) %>% 
+  mutate(position_in_text = row_number())
+head(df_text)
+ggplot(df_text)+
+  #geom_tile(aes(y=years, x=position_in_text), fill = "#17005E")+
+  geom_point(aes(y=years, x=position_in_text), colour = "#17005E", size = 1)+
+  theme_bw()+
+  coord_fixed(20)+
+  ggtitle("Year of publication of the articles referenced in Chapter 2 of the 6th IPCC report\n and their position in the text of the chapter")
+            
